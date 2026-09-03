@@ -15,7 +15,6 @@ const NAV_LINKS = [
   { href: "/casais", label: "Book de Casais" },
   { href: "/comunidade", label: "Comunidade Noivas AA" },
   { href: "/depoimentos", label: "Depoimentos" },
-  { href: "/parcerias", label: "Parcerias" },
   { href: "/equipe", label: "Equipe" },
 ];
 
