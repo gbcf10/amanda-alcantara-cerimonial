@@ -1,0 +1,171 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // Postgres gerenciado pela Netlify Database (Neon por baixo dos panos).
+  // A variável NETLIFY_DB_URL é injetada automaticamente pela Netlify em
+  // build e runtime; localmente, defina o mesmo valor no .env.
+  provider = "postgresql"
+  url      = env("NETLIFY_DB_URL")
+}
+
+model Testimonial {
+  id         String   @id @default(cuid())
+  clientName String
+  eventType  String? // ex: "Casamento", "Debutante", "Batizado"
+  quote      String
+  rating     Int      @default(5)
+  photoUrl   String?
+  published  Boolean  @default(true)
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  bio       String?
+  photoUrl  String?
+  published Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Partner {
+  id        String   @id @default(cuid())
+  name      String
+  category  String? // ex: "Fotografia", "Buffet", "Decoração"
+  logoUrl   String?
+  website   String?
+  published Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model GalleryImage {
+  id        String   @id @default(cuid())
+  url       String
+  caption   String?
+  category  String? // ex: "Casamento", "Debutante"
+  published Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+// status: "available" | "unavailable" | "booked"
+model AvailabilityDate {
+  id     String   @id @default(cuid())
+  date   DateTime @unique
+  status String
+  note   String?
+}
+
+// status: "novo" | "contatado" | "fechado" | "recusado"
+model QuoteRequest {
+  id          String    @id @default(cuid())
+  name        String
+  email       String
+  phone       String
+  eventType   String
+  eventDate   DateTime?
+  location    String?
+  guestCount  String?
+  budgetRange String?
+  message     String?
+  status      String    @default("novo")
+  createdAt   DateTime  @default(now())
+}
+
+model SiteSettings {
+  id             Int     @id @default(1)
+  heroTitle      String
+  heroSubtitle   String
+  aboutText      String
+  instagramUrl   String?
+  whatsappNumber String?
+  email          String?
+}
+
+// ---- Comunidade das noivas ----
+
+model BrideUser {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  avatarUrl    String?
+  banned       Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  posts     Post[]
+  comments  Comment[]
+  reactions Reaction[]
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  authorId  String
+  author    BrideUser @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content   String
+  imageUrl  String?
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  comments  Comment[]
+  reactions Reaction[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    BrideUser @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content   String
+  published Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// type: "amei" | "parabens" | "fofo" | "bravo"
+model Reaction {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    BrideUser @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  type      String
+  createdAt DateTime @default(now())
+
+  @@unique([postId, authorId])
+}
+
+// ---- Book de casais ----
+
+model Couple {
+  id          String    @id @default(cuid())
+  names       String // ex: "Ana & João"
+  slug        String    @unique
+  weddingDate DateTime?
+  coverUrl    String?
+  story       String?
+  published   Boolean   @default(true)
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+
+  media CoupleMedia[]
+}
+
+// type: "photo" | "video" (video = link do YouTube/Vimeo ou URL de arquivo de vídeo)
+model CoupleMedia {
+  id       String @id @default(cuid())
+  coupleId String
+  couple   Couple @relation(fields: [coupleId], references: [id], onDelete: Cascade)
+  type     String
+  url      String
+  caption  String?
+  order    Int    @default(0)
+}

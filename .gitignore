@@ -36,6 +36,17 @@ yarn-error.log*
 # vercel
 .vercel
 
+# prisma
+/prisma/dev.db
+/prisma/dev.db-journal
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local Netlify folder
+.netlify
+deno.lock
+
+# Claude Code local session state
+.claude/
