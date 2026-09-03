@@ -3,11 +3,11 @@ generator client {
 }
 
 datasource db {
-  // Postgres gerenciado pela Netlify Database (Neon por baixo dos panos).
-  // A variável NETLIFY_DB_URL é injetada automaticamente pela Netlify em
-  // build e runtime; localmente, defina o mesmo valor no .env.
-  provider = "postgresql"
-  url      = env("NETLIFY_DB_URL")
+  // SQLite local, empacotado no deploy só para esta prévia (somente leitura
+  // em produção). Trocar para "postgresql" quando a hospedagem definitiva
+  // for configurada.
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model Testimonial {

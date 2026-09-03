@@ -37,7 +37,8 @@ yarn-error.log*
 .vercel
 
 # prisma
-/prisma/dev.db
+# dev.db é versionado de propósito: é o conteúdo já preenchido usado na
+# prévia do site (deploy só leitura, sem Postgres configurado ainda).
 /prisma/dev.db-journal
 
 # typescript
