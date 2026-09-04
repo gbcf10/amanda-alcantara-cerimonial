@@ -23,7 +23,7 @@ export async function submitQuoteRequest(
     eventDate: String(formData.get("eventDate") ?? ""),
     location: String(formData.get("location") ?? ""),
     guestCount: String(formData.get("guestCount") ?? ""),
-    budgetRange: String(formData.get("budgetRange") ?? ""),
+    partnerName: String(formData.get("partnerName") ?? ""),
     message: String(formData.get("message") ?? ""),
   };
 
@@ -50,7 +50,7 @@ export async function submitQuoteRequest(
       eventDate: data.eventDate ? new Date(data.eventDate) : null,
       location: data.location || null,
       guestCount: data.guestCount || null,
-      budgetRange: data.budgetRange || null,
+      partnerName: data.partnerName || null,
       message: data.message || null,
     },
   });

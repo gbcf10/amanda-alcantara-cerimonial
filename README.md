@@ -2,7 +2,7 @@
 
 Site institucional + painel administrativo para assessoria de cerimonial de
 casamentos e eventos. Feito com Next.js 16 (App Router), TypeScript, Tailwind
-CSS v4 e Prisma (SQLite em desenvolvimento).
+CSS v4 e Prisma (MySQL — banco da Hostinger em produção).
 
 ## O que tem no site
 
@@ -12,7 +12,7 @@ CSS v4 e Prisma (SQLite em desenvolvimento).
   organizado por etapa (planejamento, fornecedores, cronograma, cerimônia,
   financeiro, convidados, logística, produção do dia, pós-evento etc.)
 - Página de orçamento com formulário + calendário de disponibilidade
-- **Book de Casais** (`/casais`): perfil de cada casal com fotos, vídeos
+- **Histórias reais** (`/casais`): perfil de cada casal com fotos, vídeos
   (YouTube/Vimeo ou arquivo direto) e a história do casamento
 - **Comunidade Noivas AA** (`/comunidade`): feed onde noivas cadastradas
   podem postar, comentar e reagir (❤️ 🎉 🥰 👏) aos posts umas das outras
@@ -23,7 +23,7 @@ CSS v4 e Prisma (SQLite em desenvolvimento).
 - Gerenciar a agenda de disponibilidade (datas disponíveis / reservadas / indisponíveis)
 - Ver e atualizar os pedidos de orçamento recebidos pelo site
 - Editar textos e contatos do site (hero, sobre, Instagram, WhatsApp, e-mail)
-- Gerenciar o Book de Casais (criar casal, adicionar fotos e vídeos)
+- Gerenciar o Histórias reais (criar casal, adicionar fotos e vídeos)
 - Moderar a comunidade: aprovar/excluir posts e comentários, bloquear ou
   excluir contas de noivas
 
@@ -54,26 +54,34 @@ tiver conteúdo real o suficiente.
 
 ## Como rodar localmente
 
-1. Instale as dependências (já feito se você seguiu o setup inicial):
+Pré-requisito: um MySQL rodando (local ou remoto). No Windows/macOS o mais
+fácil é rodar via Docker:
+```bash
+docker run --name amanda-mysql -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=amanda -p 3306:3306 -d mysql:8
+```
+
+1. Instale as dependências:
    ```bash
    npm install
    ```
 
-2. Configure o `.env` (um arquivo `.env` já foi criado com valores padrão).
-   Para gerar uma nova senha de admin:
+2. Copie o `.env.example` para `.env` e preencha:
    ```bash
-   npm run hash-password -- "sua-nova-senha"
+   cp .env.example .env
    ```
-   Copie a linha `ADMIN_PASSWORD_HASH_B64=...` gerada para o `.env`.
+   - `DATABASE_URL` — conexão do seu MySQL (ex: `mysql://root:root@localhost:3306/amanda`)
+   - `SESSION_SECRET` — gere com `openssl rand -base64 48`
+   - `ADMIN_PASSWORD_HASH_B64` — gere com `npm run hash-password -- "sua-senha"`
 
-3. Crie o banco de dados e rode as migrations:
+3. Crie as tabelas no banco:
    ```bash
-   npm run db:migrate
+   npx prisma db push
    ```
 
 4. (Opcional) Popule com dados de exemplo:
    ```bash
    npm run db:seed
+   npm run db:seed-community
    ```
 
 5. Rode o servidor de desenvolvimento:
@@ -92,38 +100,87 @@ e atualize o `.env`.
 
 ## Banco de dados
 
-Em desenvolvimento o projeto usa **SQLite** (arquivo `prisma/dev.db`), sem
-necessidade de instalar nada além do Node.js.
+O projeto usa **MySQL** — em produção o banco vem incluído no plano
+Business da Hostinger. Em desenvolvimento use Docker (veja seção "Como
+rodar localmente" acima) ou qualquer MySQL 8+.
 
-Para produção (ex: Vercel), o SQLite não é adequado, pois o sistema de
-arquivos é temporário. Antes de fazer o deploy:
-
-1. Crie um banco Postgres gratuito (ex: [Neon](https://neon.tech),
-   [Supabase](https://supabase.com) ou Vercel Postgres).
-2. Em `prisma/schema.prisma`, troque:
-   ```prisma
-   datasource db {
-     provider = "postgresql"
-     url      = env("DATABASE_URL")
-   }
-   ```
-3. Atualize `DATABASE_URL` no ambiente de produção com a connection string
-   do Postgres.
-4. Rode `npx prisma migrate deploy` para criar as tabelas no novo banco.
+O schema fica em `prisma/schema.prisma`. Sempre que mudar o schema, rode:
+```bash
+npx prisma db push
+```
+para sincronizar o banco com o código.
 
 ## Fotos
 
 As imagens (portfólio, depoimentos, equipe, parcerias) são cadastradas por
 URL no painel admin — cole o link de uma imagem já hospedada (ex: um serviço
-gratuito como [Cloudinary](https://cloudinary.com) ou [ imgbb](https://imgbb.com)).
+gratuito como [Cloudinary](https://cloudinary.com) ou [imgbb](https://imgbb.com)).
 Se preferir upload direto de arquivos no futuro, dá pra integrar um serviço
-de storage (Cloudinary, UploadThing, Vercel Blob etc).
+de storage.
 
-## Deploy
+## Deploy na Hostinger (Business Web Hosting)
 
-O jeito mais simples é a [Vercel](https://vercel.com):
-1. Suba o projeto para um repositório Git.
-2. Importe o repositório na Vercel.
-3. Configure as variáveis de ambiente (`DATABASE_URL` do Postgres, `ADMIN_EMAIL`,
-   `ADMIN_PASSWORD_HASH_B64`, `SESSION_SECRET`, `NEXT_PUBLIC_SITE_URL`).
-4. Rode as migrations no banco de produção (`npx prisma migrate deploy`).
+O plano Business inclui Node.js e MySQL — dá pra rodar o site inteiro
+dentro dele.
+
+### 1. Criar o banco MySQL
+
+No **hPanel** → **Bancos de dados** → **Gerenciamento MySQL**:
+- Crie um banco novo (anote nome, usuário e senha).
+- Anote também o host (geralmente `localhost`).
+
+### 2. Subir o código
+
+Duas opções:
+- **Via Git** (recomendado): hPanel → **Avançado** → **Git** → conecte o
+  repositório e defina a pasta destino (ex: `domains/seudominio.com/app`).
+- **Via SFTP/File Manager**: mande todos os arquivos exceto `node_modules/`
+  e `.next/` para essa mesma pasta.
+
+### 3. Configurar a aplicação Node.js
+
+hPanel → **Avançado** → **Node.js** → **Criar aplicação**:
+- **Versão do Node.js:** 20 (ou mais recente disponível)
+- **Modo:** production
+- **Pasta raiz da aplicação:** a mesma onde subiu o código
+- **URL da aplicação:** seu domínio
+- **Arquivo de inicialização:** `server.js`
+
+Nas **Environment variables** da aplicação, adicione:
+- `DATABASE_URL` — `mysql://usuario:senha@localhost:3306/nome_do_banco`
+- `ADMIN_EMAIL` — e-mail de login do painel
+- `ADMIN_PASSWORD_HASH_B64` — gere com `npm run hash-password -- "senha"`
+- `SESSION_SECRET` — gere com `openssl rand -base64 48`
+- `NEXT_PUBLIC_SITE_URL` — `https://seudominio.com`
+- `NODE_ENV` — `production`
+
+### 4. Instalar dependências e buildar
+
+Via SSH (hPanel → **Avançado** → **Acesso SSH**), entre na pasta da aplicação e rode:
+```bash
+npm ci
+npx prisma db push          # cria as tabelas no MySQL
+npm run db:seed             # (opcional) popular com dados iniciais
+npm run db:seed-community   # (opcional) contas fictícias da comunidade
+npm run build
+```
+
+> **Dica:** o `npm run build` do Next é pesado de RAM. Se estourar memória
+> na Hostinger, faça o build no seu computador (`npm run build`) e envie
+> a pasta `.next/` inteira via SFTP pra pasta da aplicação.
+
+### 5. Reiniciar
+
+Volte pra tela da aplicação Node.js no hPanel e clique em **Restart App**.
+Pronto — acesse `https://seudominio.com`.
+
+### Atualizações futuras
+
+A cada mudança no código:
+```bash
+git pull                    # ou reenvia arquivos via SFTP
+npm ci                      # se alterou dependências
+npx prisma db push          # se alterou schema.prisma
+npm run build
+```
+E clique em **Restart App** no hPanel.

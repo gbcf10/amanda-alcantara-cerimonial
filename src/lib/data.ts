@@ -7,7 +7,7 @@ export const DEFAULT_SETTINGS = {
   aboutText:
     "Cuido de cada detalhe da sua cerimônia com carinho, organização e experiência, para que você viva o seu grande dia com leveza — do planejamento ao último brinde.",
   instagramUrl: "https://instagram.com/aamandacerimonial",
-  whatsappNumber: "",
+  whatsappNumber: "+55 48 8444-8087",
   email: "",
 };
 
@@ -83,6 +83,13 @@ export async function getPostWithComments(postId: string, currentUserId?: string
 
 export async function getPublishedCouples() {
   return prisma.couple.findMany({
+    where: { published: true },
+    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+  });
+}
+
+export async function getPublishedBackstage() {
+  return prisma.backstageMedia.findMany({
     where: { published: true },
     orderBy: [{ order: "asc" }, { createdAt: "desc" }],
   });

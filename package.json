@@ -5,13 +5,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node server.js",
     "lint": "eslint",
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "db:seed": "node prisma/seed.js",
     "db:seed-community": "node scripts/seed-community.js",
+    "db:seed-all": "node prisma/seed.js && node scripts/seed-community.js && node scripts/seed-photos.js && node scripts/seed-more-content.js && node scripts/seed-team-avatars.js",
     "hash-password": "node scripts/hash-password.js"
   },
   "prisma": {
@@ -35,7 +36,6 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
-    "netlify-cli": "^27.4.2",
     "prisma": "^6",
     "tailwindcss": "^4",
     "typescript": "^5"

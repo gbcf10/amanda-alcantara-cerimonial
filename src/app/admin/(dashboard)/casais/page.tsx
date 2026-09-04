@@ -14,7 +14,7 @@ export default async function AdminCasaisPage() {
     <div className="flex flex-col gap-10">
       <div>
         <h1 className="font-serif-display text-2xl text-foreground">
-          Book de Casais
+          Histórias reais
         </h1>
         <p className="text-sm text-muted-foreground">
           Perfis de casais com fotos, vídeos e a história do grande dia.

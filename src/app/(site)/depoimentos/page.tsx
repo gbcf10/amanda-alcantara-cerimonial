@@ -16,7 +16,7 @@ export default async function DepoimentosPage() {
     <Container className="flex flex-col gap-14 py-20 sm:py-28">
       <SectionHeading
         eyebrow="Depoimentos"
-        title="Histórias de quem confiou o grande dia"
+        title="Feedback de quem viveu o grande dia"
         subtitle="A opinião de quem viveu a experiência é o que mais importa."
       />
 

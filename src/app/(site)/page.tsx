@@ -70,6 +70,7 @@ export default function HomePage() {
         </Container>
       </section>
 
+
       {/* Sobre mim */}
       <section className="py-20 sm:py-28">
         <Container className="grid gap-10 sm:grid-cols-2 sm:items-center">

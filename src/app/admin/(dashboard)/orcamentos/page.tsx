@@ -59,8 +59,8 @@ export default async function AdminOrcamentosPage() {
                   value={quote.guestCount || "Não informado"}
                 />
                 <Detail
-                  label="Orçamento"
-                  value={quote.budgetRange || "Não informado"}
+                  label="Nome do noivo(a)"
+                  value={quote.partnerName || "Não informado"}
                 />
                 <Detail
                   label="Recebido em"

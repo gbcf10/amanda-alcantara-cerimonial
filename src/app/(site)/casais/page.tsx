@@ -5,7 +5,7 @@ import { CoupleCard } from "@/components/site/CoupleCard";
 import { getPublishedCouples } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "Book de Casais | Amanda Alcântara Cerimonial",
+  title: "Histórias reais | Amanda Alcântara Cerimonial",
 };
 
 export default async function CasaisPage() {
@@ -14,8 +14,8 @@ export default async function CasaisPage() {
   return (
     <Container className="flex flex-col gap-14 py-20 sm:py-28">
       <SectionHeading
-        eyebrow="Book de Casais"
-        title="Histórias reais de amor que ajudamos a celebrar"
+        eyebrow="Histórias reais"
+        title="Histórias que merecem ser contadas"
         subtitle="Conheça um pouco de cada casal, com fotos, vídeos e a história por trás do grande dia."
       />
 

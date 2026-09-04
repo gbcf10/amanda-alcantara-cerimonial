@@ -16,8 +16,6 @@ async function hasValidSession(request: NextRequest) {
   }
 }
 
-// Usa o nome legado "middleware" (em vez do novo "proxy" do Next 16) porque
-// a ferramenta de build da Netlify ainda não lida bem com proxy.ts no Windows.
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 

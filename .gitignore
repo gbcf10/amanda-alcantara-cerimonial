@@ -32,13 +32,13 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
 
-# prisma
-# dev.db é versionado de propósito: é o conteúdo já preenchido usado na
-# prévia do site (deploy só leitura, sem Postgres configurado ainda).
+# prisma — SQLite antigo (o projeto agora usa MySQL da Hostinger)
+/prisma/dev.db
 /prisma/dev.db-journal
 
 # typescript

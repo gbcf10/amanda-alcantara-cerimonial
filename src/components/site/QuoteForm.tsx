@@ -17,14 +17,6 @@ const EVENT_TYPES = [
   "Outro",
 ];
 
-const BUDGET_RANGES = [
-  "Até R$ 5.000",
-  "R$ 5.000 – R$ 10.000",
-  "R$ 10.000 – R$ 20.000",
-  "Acima de R$ 20.000",
-  "Ainda não sei",
-];
-
 const initialState: QuoteFormState = {};
 
 export function QuoteForm({ availability }: { availability: AvailabilityDay[] }) {
@@ -127,15 +119,13 @@ export function QuoteForm({ availability }: { availability: AvailabilityDay[] })
               placeholder="Ex: 120"
             />
           </Field>
-          <Field label="Faixa de orçamento" name="budgetRange" error={fieldError("budgetRange")}>
-            <select name="budgetRange" className="input" defaultValue="">
-              <option value="">Prefiro não informar</option>
-              {BUDGET_RANGES.map((range) => (
-                <option key={range} value={range}>
-                  {range}
-                </option>
-              ))}
-            </select>
+          <Field label="Nome do noivo(a)" name="partnerName" error={fieldError("partnerName")}>
+            <input
+              name="partnerName"
+              type="text"
+              className="input"
+              placeholder="Nome do(a) parceiro(a)"
+            />
           </Field>
         </div>
 

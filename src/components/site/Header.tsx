@@ -12,10 +12,11 @@ const NAV_LINKS = [
   { href: "/cronograma-contratacao", label: "Cronograma" },
   { href: "/servicos", label: "O que inclui" },
   { href: "/portfolio", label: "Portfólio" },
-  { href: "/casais", label: "Book de Casais" },
+  { href: "/casais", label: "Histórias reais" },
+  { href: "/bastidores", label: "Bastidores" },
   { href: "/comunidade", label: "Comunidade Noivas AA" },
   { href: "/depoimentos", label: "Depoimentos" },
-  { href: "/equipe", label: "Equipe" },
+  { href: "/duvidas", label: "Dúvidas" },
 ];
 
 export function Header({ siteName }: { siteName: string }) {

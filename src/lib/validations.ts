@@ -41,6 +41,14 @@ export const coupleMediaSchema = z.object({
   order: z.coerce.number().int().default(0),
 });
 
+export const backstageMediaSchema = z.object({
+  type: z.enum(["photo", "video"]),
+  url: z.string().trim().min(1, "Informe a URL"),
+  caption: z.string().trim().optional().or(z.literal("")),
+  published: z.coerce.boolean(),
+  order: z.coerce.number().int().default(0),
+});
+
 export const quoteRequestSchema = z.object({
   name: z.string().trim().min(2, "Informe seu nome completo"),
   email: z.string().trim().email("E-mail inválido"),
@@ -49,7 +57,7 @@ export const quoteRequestSchema = z.object({
   eventDate: z.string().trim().optional().or(z.literal("")),
   location: z.string().trim().optional().or(z.literal("")),
   guestCount: z.string().trim().optional().or(z.literal("")),
-  budgetRange: z.string().trim().optional().or(z.literal("")),
+  partnerName: z.string().trim().optional().or(z.literal("")),
   message: z.string().trim().optional().or(z.literal("")),
 });
 

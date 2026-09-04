@@ -12,7 +12,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const couple = await getCoupleBySlug(slug);
-  return { title: couple ? `${couple.names} | Book de Casais` : "Book de Casais" };
+  return { title: couple ? `${couple.names} | Histórias reais` : "Histórias reais" };
 }
 
 export default async function CoupleDetailPage({
